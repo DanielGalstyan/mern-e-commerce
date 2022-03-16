@@ -8,7 +8,7 @@ dotenv.config();
 const cors = require("cors");
 const morgan = require("morgan");
 
-const userRoute = require("./routes/users");
+const userRoute = require("./routes/Auth");
 
 app.use(cors());
 app.use(express.json());
