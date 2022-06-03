@@ -1,8 +1,13 @@
 const router = require("express").Router();
 const Cart = require("../models/Cart");
 const { route } = require("./Auth");
+const {
+  verifyToken,
+  verifyTokenAndAdmin,
+  verifyTokenAndAuthorization,
+} = require("./VerifyToken");
 
-router.post("/add", async (req, res) => {
+router.post("/add", verifyTokenAndAuthorization, async (req, res) => {
   try {
     const newCart = new Cart(req.body);
     const saveCart = await newCart.save();
@@ -15,7 +20,7 @@ router.post("/add", async (req, res) => {
 
 //update cart data
 
-router.put("/cartUpdate", async (req, res) => {
+router.put("/cartUpdate", verifyTokenAndAuthorization, async (req, res) => {
   try {
     const updateCart = await Cart.findByIdAndUpdate(
       req.body.id,
@@ -35,7 +40,7 @@ router.put("/cartUpdate", async (req, res) => {
 
 //cart deleting
 
-router.delete("/cartdeleting", async (req, res) => {
+router.delete("/cartdeleting", verifyTokenAndAdmin, async (req, res) => {
   try {
     await Cart.findByIdAndDelete(req.body.id);
     res.status(200).json("Cart has been deleted");
@@ -46,7 +51,7 @@ router.delete("/cartdeleting", async (req, res) => {
 });
 
 // find by user
-router.post("/finduser", async (req, res) => {
+router.post("/finduser", verifyTokenAndAdmin, async (req, res) => {
   try {
     const userCart = await Cart.findOne({
       userId: req.body.userId,
@@ -60,7 +65,7 @@ router.post("/finduser", async (req, res) => {
 
 // Get all carts
 
-router.post("/getcarts", async (req, res) => {
+router.post("/getcarts", verifyTokenAndAdmin, async (req, res) => {
   try {
     const getCarts = await Cart.find();
     console.log(getCarts);
